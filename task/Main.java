@@ -7,7 +7,6 @@ import task.util.type.Parser;
  * User: benjamin
  * Date: 06/10/13
  * Time: 15:22
- * To change this template use File | Settings | File Templates.
  */
 public class Main {
 
