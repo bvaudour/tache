@@ -1,11 +1,18 @@
 package task.util.color;
 
 /**
- * Created with IntelliJ IDEA.
- * User: benjamin
- * Date: 22/09/13
- * Time: 17:48
- * To change this template use File | Settings | File Templates.
+ * L'enum <code>Effet</code> définit les effets de police pour la sortie terminal :<br />
+ * <ul>
+ * <li><b>NONE</b> : Aucun effet</li>
+ * <li><b>NORMAL</b> : Effet standard</li>
+ * <li><b>BOLD</b> : Gras</li>
+ * <li><b>ITALIC</b> : Italique</li>
+ * <li><b>UNDERLINE</b> : Souligné</li>
+ * <li><b>BLINK</b> : Clignotant</li>
+ * <li><b>INVERTED</b> : Couleurs inversées</li>
+ * </ul>
+ * @author Benjamin VAUDOUR
+ * @since 1.0
  */
 public enum Effet {
   NONE(-1),
@@ -22,6 +29,10 @@ public enum Effet {
     _i = i;
   }
 
+  /**
+   * Sort la valeur ANSI de l'effet
+   * @return Valeur sous forme de chaîne de caractères
+   */
   public String value() {
     return (this == NONE) ? "" : String.valueOf(_i);
   }
