@@ -5,14 +5,16 @@ import task.util.action.Option;
 import task.util.color.*;
 
 /**
- * Created with IntelliJ IDEA.
- * User: benjamin
- * Date: 07/10/13
- * Time: 12:23
- * To change this template use File | Settings | File Templates.
+ * La classe <code>Help</code> regroupe l'ensemble de méthodes permettant d'afficher l'aide
+ * @author Benjamin VAUDOUR
+ * @since 1.0
  */
 public class Help {
 
+  /**
+   * Affiche l'aide
+   * @param shell si true, affiche l'aide en mode interactif, sinon, affiche l'aide en mode non interactif
+   */
   public static void print(boolean shell) {
     printUsage();
     printActions(shell);
