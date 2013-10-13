@@ -7,11 +7,16 @@ import task.util.type.Date;
 import java.util.*;
 
 /**
- * Created with IntelliJ IDEA.
- * User: benjamin
- * Date: 07/10/13
- * Time: 09:14
- * To change this template use File | Settings | File Templates.
+ * La classe <code>Database</code> définit la base de données des tâches. Elle contient les tables suivantes :
+ * <br></br>
+ * <ul>
+ * <li>La liste des tâches de référence aux tâches récurrentes indexées par leur ID</li>
+ * <li>La liste des tâches indexées par leur ID</li>
+ * <li>La liste des ID de tâches récurrentes par ID de référence</li>
+ * </ul>
+ * @author Benjamin VAUDOUR
+ * @since 1.0
+ * @see task.Tache
  */
 public final class Database {
 
@@ -21,16 +26,29 @@ public final class Database {
 
   private int lid = 0, lrid = Tache.RECUR;
 
+  /**
+   * Efface la base de donnée
+   */
   public void clear() {
     taches.clear();
     recurs.clear();
     ids.clear();
   }
 
+  /**
+   * Récupère une tâche à partir de son ID
+   * @param id ID de la tâche à récupérer
+   * @return null si l'ID n'est pas trouvé dans la BDD, une tâche standard s'il s'agit d'un ID de tâche, une tâche de référence sinon
+   */
   public Tache get(int id) {
     return table(id).get(id);
   }
 
+  /**
+   * Supprime une tâche
+   * @param id ID de la tâche (ou tâche de référence) à supprimer
+   * @return La tâche supprimée (null si l'ID n'a pas été trouvé)
+   */
   public Tache pop(int id) {
     Map<Integer, Tache> m = table(id);
     Tache t = m.remove(id);
@@ -52,6 +70,11 @@ public final class Database {
     return t;
   }
 
+  /**
+   * Supprime toutes les tâches récurrentes d'une tâche de référence
+   * @param rid ID de la tâche de référence à supprimer
+   * @return Liste des tâches supprimées
+   */
   public Set<Tache> popAll(int rid) {
     Set<Tache> out = new LinkedHashSet<Tache>();
     Set<Integer> l = new TreeSet<Integer>(ids(rid));
@@ -60,6 +83,17 @@ public final class Database {
     return out;
   }
 
+  /**
+   * Ajoute une tâche
+   * <i>
+   * Nota : L'ID de la tâche à ajouter ne doit pas être présent dans la BDD
+   * Pour connaître le premier ID utilisable, utiliser la méthode nextId() (ou nextRid() s'il s'agit d'une tâche de référence)
+   * </i>
+   * @param t Tâche à ajouter
+   * @return true si la tâche a été ajoutée, false sinon (dû à ID déjà présent dans la BDD ou bien tâche invalide)
+   * @see #nextId()
+   * @see #nextRid()
+   */
   public boolean push(Tache t) {
     if (t == null) return false;
     int id = t.id();
@@ -76,10 +110,18 @@ public final class Database {
     return true;
   }
 
+  /**
+   * Récupère le premier ID de tâche standard utilisable
+   * @return ID utilisable pour une tâche à ajouter (dernier ID listé + 1)
+   */
   public int nextId() {
     return lid + 1;
   }
 
+  /**
+   * Récupère le premier ID de tâche de référence utilisable
+   * @return ID utilisable pour une tâche de référence à ajouter (premier "trou" trouvé)
+   */
   public int nextRid() {
     int n = Tache.RECUR;
     while (n++ <= lrid) {
@@ -88,10 +130,19 @@ public final class Database {
     return n;
   }
 
+  /**
+   * Récupère la liste des ID de tâches standard
+   * @return Liste d'ID
+   */
   public Set<Integer> getIds() {
     return new TreeSet<Integer>(taches.keySet());
   }
 
+  /**
+   * Récupère la liste des ID de tâches standard parmi une liste d'ID
+   * @param ids Liste d'ID à tester
+   * @return Liste d'ID
+   */
   public Set<Integer> getIds(Set<Integer> ids) {
     Set<Integer> out = new TreeSet<Integer>();
     Set<Integer> l = getIds();
@@ -100,12 +151,22 @@ public final class Database {
     return out;
   }
 
+  /**
+   * Récupère la liste des ID de tâches récurrentes
+   * @param rid ID de la tâche de référence
+   * @return Liste d'ID
+   */
   public Set<Integer> getIds(int rid) {
     Set<Integer> out = new TreeSet<Integer>();
     if (ids.containsKey(rid)) out.addAll(ids(rid));
     return out;
   }
 
+  /**
+   * Récupère la liste des ID de tâches standard dont l'échéance est inférieure à une date donnée
+   * @param dMax Échéance maximale des tâches dont on souhaite récupérer l'ID
+   * @return Liste d'ID
+   */
   public Set<Integer> getIds(Date dMax) {
     Set<Integer> out = new TreeSet<Integer>();
     for (int i : getIds()) {
@@ -115,6 +176,11 @@ public final class Database {
     return out;
   }
 
+  /**
+   * Récupère la liste des ID de tâches standard non supprimées parmi une liste d'ID
+   * @param ids Liste d'ID à tester
+   * @return Liste d'ID
+   */
   public Set<Integer> getNotDeletedIds(Set<Integer> ids) {
     Set<Integer> out = new TreeSet<Integer>();
     ids = getIds(ids);
@@ -123,10 +189,19 @@ public final class Database {
     return out;
   }
 
+  /**
+   * Récupère la liste des ID de tâches de référence
+   * @return Liste d'ID de référence
+   */
   public Set<Integer> getRids() {
     return new TreeSet<Integer>(recurs.keySet());
   }
 
+  /**
+   * Récupère la liste des ID de tâches de référence parmi une liste d'ID
+   * @param rids Liste d'ID de référence à tester
+   * @return Liste d'ID de référence
+   */
   public Set<Integer> getRids(Set<Integer> rids) {
     Set<Integer> out = new TreeSet<Integer>();
     Set<Integer> l = getRids();
@@ -135,6 +210,10 @@ public final class Database {
     return out;
   }
 
+  /**
+   * Trie la liste des tâches standard suivant l'ordre naturel
+   * @see task.Tache#compareTo(Tache)
+   */
   public void sort() {
     int s = taches.size();
     if (s < 2) return;
@@ -148,6 +227,11 @@ public final class Database {
     }
   }
 
+  /**
+   * Réordonnance les ID de tâches afin de supprimer les "trous"
+   * <i>Nota : Pour que la méthode fonctionne, la BDD doit être préalablement triée</i>
+   * @see #sort()
+   */
   public boolean resequence() {
     if (lid == 0) return true;
     Set<Integer> l = getIds();
@@ -158,6 +242,17 @@ public final class Database {
     return true;
   }
 
+  /**
+   * Ajoute les tâches récurrentes manquantes à partir d'une date donnée
+   * Après exécution de la méthode :
+   * <ul>
+   * <li>la tâche de référence possède une échéance supérieure à la date d'entrée,</li>
+   * <li>la BDD contient toutes les tâches récurrentes (supprimées ou non) entre l'ancienne date de référence et la nouvelle</li>
+   * <li>La BDD contient au moins 3 tâches récurrentes (non supprimées) à la tâche de référence, avec une date d'échéance supérieure à la date d'entrée</li>
+   * @param rid ID de la tâche de référence à traiter
+   * @param d0 Date minimum de la future échéance de la tâche de référence
+   * @return Nombre de tâches récurrentes manquantes ajoutées
+   */
   public int addLackTasks(int rid, Date d0) {
     Tache tR = get(rid);
     if (tR == null) return 0;
@@ -186,10 +281,26 @@ public final class Database {
     return out;
   }
 
+  /**
+   * Ajoute toutes les tâches récurrentes manquantes de toutes les tâches de référence à partir d'une date donnée
+   * @param d0 Date minimum de la future échéance de la tâche de référence
+   * @see #addLackTasks(int, task.util.type.Date)
+   */
   public void addLackTasks(Date d0) {
     for (int rid : getRids()) addLackTasks(rid, d0);
   }
 
+  /**
+   * Ajoute une tâche à partir d'un template de champs
+   * <ul>
+   * <li>Si la tâche est une tâche récurrente, celle-ci est ajoutée dans la table des tâches de référence, et les tâches manquantes sont créées.</li>
+   * <li>Sinon, la tâche est directement ajoutée dans la table des tâches standard.</li>
+   * </ul>
+   * @param m Liste des champs (Clé : Type de champ/Type de valeur; Valeur : chaîne de caractère)
+   * @return Liste des tâches créées
+   * @see task.util.action.Option
+   * @see task.Tache#build(Tache, java.util.Map)
+   */
   public Set<Tache> add(Map<Option, String> m) {
     Set<Tache> out = new LinkedHashSet<Tache>();
     Tache t = Tache.build(new Tache(), m);
@@ -206,6 +317,11 @@ public final class Database {
     return out;
   }
 
+  /**
+   * Clôture une(des) tâche(s)
+   * @param ids Liste des ID de tâches à clôturer
+   * @return Liste des tâches clôturées
+   */
   public Set<Tache> close(Set<Integer> ids) {
     Set<Tache> out = new LinkedHashSet<Tache>();
     ids = getIds(ids);
@@ -218,6 +334,14 @@ public final class Database {
     return out;
   }
 
+  /**
+   * Modifie une tâche à partir d'un template
+   * @param id ID de la tâche à modifier
+   * @param m Liste des champs (Clé : Type de champ/Type de valeur; Valeur : chaîne de caractère)
+   * @return Tâche modifiée
+   * @see task.util.action.Option
+   * @see task.Tache#buildFrom(Tache, java.util.Map)
+   */
   public Tache modify(int id, Map<Option, String> m) {
     Tache tO = get(id);
     if (tO == null) return tO;
@@ -245,6 +369,14 @@ public final class Database {
     return tO;
   }
 
+  /**
+   * Modifie toutes les tâches récurrentes associées à une même tâche de référence
+   * @param id ID de la tâche récurrente à modifier servante de base à la tâche de référence
+   * @param m Liste des champs (Clé : Type de champ/Type de valeur; Valeur : chaîne de caractère)
+   * @return Liste des tâches récurrentes modifiées
+   * @see task.util.action.Option
+   * @see task.Tache#buildFrom(Tache, java.util.Map)
+   */
   public Set<Tache> modifyAll(int id, Map<Option, String> m) {
     Set<Tache> out = new LinkedHashSet<Tache>();
     Tache tO = get(id);
