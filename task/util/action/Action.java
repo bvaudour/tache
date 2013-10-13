@@ -7,19 +7,35 @@ import task.util.type.Type;
 import java.util.*;
 
 /**
- * Created with IntelliJ IDEA.
- * User: benjamin
- * Date: 06/10/13
- * Time: 19:26
- * To change this template use File | Settings | File Templates.
+ * La classe <code>Action</code> permet d'analyser et de gérer les arguments en entrée.
+ * @author Benjamin VAUDOUR
+ * @since 1.0
  */
 public final class Action {
 
+  /**
+   * Aucune action
+   */
   public static final Action NONE        = new Action(ActionType.NONE);
+  /**
+   * Action "Aide sur l'application"
+   */
   public static final Action HELP        = new Action(ActionType.HELP);
+  /**
+   * Action "passage en mode interactif"
+   */
   public static final Action SHELL       = new Action(ActionType.SHELL);
+  /**
+   * Action "Sortir du mode interactif"
+   */
   public static final Action EXIT        = new Action(ActionType.EXIT);
+  /**
+   * Action "Voir toutes les tâches"
+   */
   public static final Action VIEWALL     = new Action(ActionType.VIEWALL);
+  /**
+   * Action "Voir toutes les tâches à l'horizon '1 mois'"
+   */
   public static final Action VIEWPARTIAL = new Action(ActionType.VIEWPARTIAL);
 
   private final ActionType          _t;
@@ -44,6 +60,11 @@ public final class Action {
     this(t, new TreeSet<Integer>(), o);
   }
 
+  /**
+   * Analyse une série d'arguments pour connaître l'action à effectuer
+   * @param s Liste d'arguments en entrée
+   * @return Action résultante
+   */
   public static Action getInstance(String s) {
     if (s == null) return VIEWPARTIAL;
     Scanner sc = new Scanner(s);
@@ -63,14 +84,27 @@ public final class Action {
     return NONE;
   }
 
+  /**
+   * Récupère le type d'action à effectuer
+   * @return Type d'action à effectuer
+   */
   public ActionType type() {
     return _t;
   }
 
+  /**
+   * Récupère la liste des ID de tâches sur lesquels effectuer l'action
+   * @return Liste d'ID
+   */
   public Set<Integer> ids() {
     return _i;
   }
 
+  /**
+   * Récupère la liste d'options à appliquer
+   * @return Liste d'options et valeurs associées
+   * @see task.util.action.Option
+   */
   public Map<Option, String> options() {
     return _o;
   }
