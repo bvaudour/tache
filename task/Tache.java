@@ -6,21 +6,21 @@ import task.util.type.*;
 import java.util.Map;
 
 /**
- * La classe <code>Tache</code> représente la structure d'une tâche :
+ * La classe <code>Tache</code> représente la structure d'une tâche :<br />
  * <ul>
- * <dd>id : Identifiant unique de la tâche. Si id > Tache.RECUR, il s'agit du template d'une tâche récurrente</dd>
- * <dd>rid : Identifiant du template de référence pour une tâche récurrente</dd>
- * <dd>categorie : Catégorie de la tâche</dd>
- * <dd>priority : Priorité de la tâche</dd>
- * <dd>date : Date d'échéance de la tâche</dd>
- * <dd>begin : Heure de début de la tâche</dd>
- * <dd>end : Heure de fin de la tâche</dd>
- * <dd>recurrence : Récurrence de la tâche</dd>
- * <dd>name : Description de la tâche</dd>
- * <dd>del : Marqueur de suppression de la tâche</dd>
+ * <li><b>id</b> : Identifiant unique de la tâche. Si id > <code>Tache.RECUR</code>, il s'agit du template d'une tâche récurrente</li>
+ * <li><b>rid</b> : Identifiant du template de référence pour une tâche récurrente</li>
+ * <li><b>categorie</b> : Catégorie de la tâche</li>
+ * <li><b>priority</b> : Priorité de la tâche</li>
+ * <li><b>date</b> : Date d'échéance de la tâche</li>
+ * <li><b>begin</b> : Heure de début de la tâche</li>
+ * <li><b>end</b> : Heure de fin de la tâche</li>
+ * <li><b>recurrence</b> : Récurrence de la tâche</li>
+ * <li><b>name</b> : Description de la tâche</li>
+ * <li><b>del</b> : Marqueur de suppression de la tâche</li>
  * </ul>
  * @author Benjamin VAUDOUR
- * @since JDK1.7
+ * @since 1.0
  * @see task.Champ
  */
 public final class Tache implements Comparable<Tache> {
@@ -65,8 +65,7 @@ public final class Tache implements Comparable<Tache> {
 
   /**
    * Crée une nouvelle tâche à partir d'une chaîne de caractères
-   * @param s
-   *   Chaîne de caractère dont les différents champs de la tâche sont séparées par des tabulations
+   * @param s Chaîne de caractères dont les différents champs de la tâche sont séparés par des tabulations
    * @see task.Champ
    */
   public Tache(String s) {
@@ -190,8 +189,7 @@ public final class Tache implements Comparable<Tache> {
 
   /**
    * Modifie l'ID de la tâche
-   * @param id
-   *   Nouvel ID de la tâche
+   * @param id Nouvel ID de la tâche
    * @return ID modifié
    */
   public int        id(int id) {
@@ -200,8 +198,7 @@ public final class Tache implements Comparable<Tache> {
   }
   /**
    * Modifie l'ID de la tâche de référence
-   * @param rid
-   *   Nouvel ID de la tâche de référence
+   * @param rid Nouvel ID de la tâche de référence
    * @return ID de référence modifié
    */
   public int        rid(int rid) {
@@ -210,8 +207,7 @@ public final class Tache implements Comparable<Tache> {
   }
   /**
    * Modifie la catégorie de la tâche
-   * @param c
-   *   Nouvelle catégorie de la tâche
+   * @param c Nouvelle catégorie de la tâche
    * @return Catégorie modifiée
    */
   public String     categorie(String c) {
@@ -220,8 +216,7 @@ public final class Tache implements Comparable<Tache> {
   }
   /**
    * Modifie la priorité de la tâche
-   * @param p
-   *   Nouvelle priorité de la tâche
+   * @param p Nouvelle priorité de la tâche
    * @return Priorité modifiée
    */
   public Priorite   priority(Priorite p) {
@@ -230,8 +225,7 @@ public final class Tache implements Comparable<Tache> {
   }
   /**
    * Modifie la date de la tâche
-   * @param d
-   *   Nouvelle date de la tâche
+   * @param d Nouvelle date de la tâche
    * @return Date modifiée
    */
   public Date       date(Date d) {
@@ -240,8 +234,7 @@ public final class Tache implements Comparable<Tache> {
   }
   /**
    * Incrémente la date de la tâche d'un certain temps
-   * @param r
-   *   Temps à ajouter/supprimer à la date
+   * @param r Temps à ajouter/supprimer à la date
    * @return Date modifiée
    */
   public Date       incrDate(Recurrence r) {
@@ -249,8 +242,7 @@ public final class Tache implements Comparable<Tache> {
   }
   /**
    * Modifie l'heure de début de la tâche
-   * @param h
-   *   Nouvelle heure de début de la tâche
+   * @param h Nouvelle heure de début de la tâche
    * @return Heure modifiée
    */
   public Heure      begin(Heure h) {
@@ -259,8 +251,7 @@ public final class Tache implements Comparable<Tache> {
   }
   /**
    * Incrémente l'heure de début de la tâche d'un certain temps
-   * @param r
-   *   Temps à ajouter/supprimer à l'heure de début
+   * @param r Temps à ajouter/supprimer à l'heure de début
    * @return Heure modifiée
    */
   public Heure      incrBegin(Recurrence r) {
@@ -268,8 +259,7 @@ public final class Tache implements Comparable<Tache> {
   }
   /**
    * Modifie l'heure de fin de la tâche
-   * @param h
-   *   Nouvelle heure de fin de la tâche
+   * @param h Nouvelle heure de fin de la tâche
    * @return Heure modifiée
    */
   public Heure      end(Heure h) {
@@ -278,8 +268,7 @@ public final class Tache implements Comparable<Tache> {
   }
   /**
    * Incrémente l'heure de fin de la tâche d'un certain temps
-   * @param r
-   *   Temps à ajouter/supprimer à l'heure de fin
+   * @param r Temps à ajouter/supprimer à l'heure de fin
    * @return Heure modifiée
    */
   public Heure      incrEnd(Recurrence r) {
@@ -287,8 +276,7 @@ public final class Tache implements Comparable<Tache> {
   }
   /**
    * Modifie la récurrence de la tâche
-   * @param r
-   *   Nouvelle récurrence de la tâche
+   * @param r Nouvelle récurrence de la tâche
    * @return Récurrence modifiée
    */
   public Recurrence recurrence(Recurrence r) {
@@ -297,8 +285,7 @@ public final class Tache implements Comparable<Tache> {
   }
   /**
    * Modifie la description de la tâche
-   * @param s
-   *   Nouvelle description de la tâche
+   * @param s Nouvelle description de la tâche
    * @return Description modifiée
    */
   public String     description(String s) {
@@ -307,8 +294,7 @@ public final class Tache implements Comparable<Tache> {
   }
   /**
    * Modifie le marqueur de suppression de la tâche
-   * @param d
-   *   Marqueur de suppression de la tâche
+   * @param d Marqueur de suppression de la tâche
    * @return true si tâche supprimée, false sinon
    * @see task.util.type.Suppression
    */
@@ -318,8 +304,7 @@ public final class Tache implements Comparable<Tache> {
   }
   /**
    * Modifie le marqueur de suppression de la tâche
-   * @param b
-   *   Marqueur de suppression de la tâche
+   * @param b Marqueur de suppression de la tâche
    * @return true si tâche supprimée, false sinon
    */
   public boolean    setDeleted(boolean b) {
@@ -573,7 +558,7 @@ public final class Tache implements Comparable<Tache> {
 
   /**
    * Répare le temps d'exécution de la tâche (heure de début / heure de fin)
-   *   = L'heure de fin doit être supérieure à l'heure de début ou nulle 
+   *   = L'heure de fin doit être supérieure à l'heure de début ou nulle
    * @return Tâche modifiée
    */
   public  Tache repairHour() {
@@ -588,7 +573,7 @@ public final class Tache implements Comparable<Tache> {
   }
   /**
    * Répare la récurrence de la tâche
-   *   = Une tâche ne peut être récurrente que si la date d'échéance est non nulle 
+   *   = Une tâche ne peut être récurrente que si la date d'échéance est non nulle
    * @return Tâche modifiée
    */
   public Tache repairRecur() {
@@ -657,6 +642,7 @@ public final class Tache implements Comparable<Tache> {
    * @param m
    *   Liste des champs à modifier (Clé : type de champ/type de valeur; Valeur : nouvelle valeur du champ sous forme de String)
    * @return Tâche modifiée
+   * @see task.util.action.Option
    */
   public static Tache build(Tache t, Map<Option, String> m) {
     set(t, m);
@@ -672,6 +658,7 @@ public final class Tache implements Comparable<Tache> {
    * @param m
    *   Liste des champs à modifier (Clé : type de champ/type de valeur; Valeur : nouvelle valeur du champ sous forme de String)
    * @return Nouvelle tâche construite
+   * @see task.util.action.Option
    */
   public static Tache buildFrom(Tache t, Map<Option, String> m) {
     Tache tN = set(new Tache(t), m);
