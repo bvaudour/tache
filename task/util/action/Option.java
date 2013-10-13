@@ -7,11 +7,29 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created with IntelliJ IDEA.
- * User: benjamin
- * Date: 06/10/13
- * Time: 19:18
- * To change this template use File | Settings | File Templates.
+ * L'enum <code>Option</code> définit les clés identifiant les champs des tâches pour la modification/l'ajout<br />
+ * <ul>
+ * <li><b>CAT</b> : Définit la catégorie</li>
+ * <li><b>PRI</b> : Définit la priorité</li>
+ * <li><b>DAT</b> : Définit la date d'échéance</li>
+ * <li><b>BEG</b> : Définit l'heure de début</li>
+ * <li><b>END</b> : Définit l'heure de fin</li>
+ * <li><b>REC</b> : Définit la récurrence</li>
+ * <li><b>TAC</b> : Définit la description</li>
+ * <li><b>IDAT</b> : permet d'incrémenter la date d'échéance d'une certaine période</li>
+ * <li><b>IBEG</b> : permet d'incrémenter l'heure de début d'une certaine durée</li>
+ * <li><b>IEND</b> : permet d'incrémenter l'heure de fin d'une certaine durée</li>
+ * <li><b>DDAT</b> : permet de décrémenter la date d'échéance d'une certaine période</li>
+ * <li><b>DBEG</b> : permet de décrémenter l'heure de début d'une certaine durée</li>
+ * <li><b>DEND</b> : permet de décrémenter l'heure de fin d'une certaine durée</li>
+ * <li><b>RDAT</b> : permet de supprimer la date d'échéance</li>
+ * <li><b>RBEG</b> : permet de supprimer l'heure de début</li>
+ * <li><b>REND</b> : permet de supprimer l'heure de fin</li>
+ * <li><b>REND</b> : permet de supprimer la récurrence</li>
+ * <li><b>NONE</b> : Option  non valide</li>
+ * </ul>
+ * @author Benjamin VAUDOUR
+ * @since 1.0
  */
 public enum Option {
 
@@ -34,8 +52,15 @@ public enum Option {
   RREC("-r",  Type.NONE, "Récurrence (Suppression)"),
   NONE("",    Type.NONE, "");
 
+  /**
+   * Liste des options valides
+   */
   public static final Option[] CODES = {CAT, PRI, DAT, BEG, END, REC, TAC, IDAT, IBEG, IEND, DDAT, DBEG, DEND, RDAT, RBEG, REND, RREC};
 
+  /**
+   * Récupère la liste des options de base (mode ajout)
+   * Liste d'options
+   */
   public static Set<Option> standard() {
     Set<Option> l = new HashSet<Option>();
     l.add(CAT);
@@ -48,6 +73,10 @@ public enum Option {
     return l;
   }
 
+  /**
+   * Récupère la liste d'options étendues (mode duplication/modification)
+   * Liste d'options
+   */
   public static Set<Option> extended() {
     Set<Option> l = standard();
     l.add(IDAT);
@@ -73,29 +102,58 @@ public enum Option {
     _help = h;
   }
 
+  /**
+   * Récupère le code de l'option
+   * @return Code de l'option
+   */
   public String code() {
     return _code;
   }
 
+  /**
+   * Récupère le type de valeur attendu pour l'option
+   * @return Type de valeur
+   * @see task.util.type.Type
+   */
   public Type type() {
     return _type;
   }
 
+  /**
+   * Récupère la description de l'option
+   * @return Description de l'option
+   */
   public String help() {
     return _help;
   }
 
+  /**
+   * Récupère la liste des arguments encore à traiter
+   * @param s Ligne de commande comprenant le nom de l'option et les arguments suivants
+   * @return Liste des arguments expurgée du nom de l'option
+   */
   public String next(String s) {
     s = Parser.removeFirst(s, _code);
     return Parser.lTrim(s);
   }
 
+  /**
+   * Récupère la prochaine option parmi les arguments
+   * @param s Liste d'arguments d'entrée
+   * @return Option correspondante
+   */
   public static Option getInstance(String s) {
     for (Option c: CODES)
       if (s.startsWith(c.code())) return c;
     return NONE;
   }
 
+  /**
+   * Modifie le champ requis d'une tâche
+   * @param t Tâche à modifier
+   * @param s Nouvelle valeur du champ à modifier
+   * @return true si le champ requis a été modifié, false sinon
+   */
   public boolean set(Tache t, String s) {
     int i = 1;
     switch (this) {
