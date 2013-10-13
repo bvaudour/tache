@@ -14,14 +14,29 @@ import java.io.PrintWriter;
 import java.util.*;
 
 /**
- * Created with IntelliJ IDEA.
- * User: benjamin
- * Date: 07/10/13
- * Time: 11:52
- * To change this template use File | Settings | File Templates.
+ * La classe <code>Controleur</code> permet le contrôle de la BDD des tâches et gère les entrées/sorties (fichier + terminal)
+ * @author Benjamin VAUDOUR
+ * @since 1.0
  */
 public class Controleur {
 
+  /**
+   * Nom du fichier des tâches par défaut (pour le moment, le seul utilisable).<br />
+   * Le fichier contient, au début, l'ensemble des tâches de références (utilisées pour la création de tâches récurrentes), suivie de la liste de toutes les tâches.<br />
+   * Chaque tâche est représentée par une ligne dans le fichier. Une ligne de tâche contient les champs suivants, séparés par des tabulations :
+   * <ul>
+   * <li><b>ID</b> : Il s'agit de l'ID de la tâche (ou tâche de référence, suivant le rang)</li>
+   * <li><b>RID</b> : ID de la tâche de référence pour les tâches récurrentes, 0 sinon</li>
+   * <li><b>Catégorie</b> : Catégorie de la tâche</li>
+   * <li><b>Priorité</b> : Priorité de la tâche (H(igh), M(edium), L(ow), caractère '-' si aucune priorité définie)</li>
+   * <li><b>Date</b> : Échéance de la tâche (au format YYYYMMDD, '-' si aucune échéance)</li>
+   * <li><b>Début</b> : Heure de début de la tâche (au format hhmm sur 24h, '-' si non défini)</li>
+   * <li><b>Fin</b> : Heure de fin de la tache (format identique à début)</li>
+   * <li><b>Récurrence</b> : Récurrence de la tâche (entier suivi de l'unité de récurrence : y(ear), m(onth), w(eek), d(ay), h(our) '(minutes), '-' si tâche non récurrente)</li>
+   * <li><b>Description</b> : Description de la tâche</li>
+   * <li><b>Suppression</b> : Marqueur de suppression de la tâche (1 si tâche clôturée, 0 sinon)</li>
+   * </ul>
+   */
   public static final String DEFAULTFILE = ".tache.lst";
 
   private final String   _path;
@@ -35,16 +50,36 @@ public class Controleur {
     return b.toString();
   }
 
+  /**
+   * Constructeur générique
+   * @param path Nom du chemin complet du fichier des tâches
+   */
   public Controleur(String path) {
     _path = path;
   }
 
+  /**
+   * Constructeur par défaut<br />
+   * Utilise le chemin du fichier par défaut (dans le répertoire utilisateur)
+   * @see #DEFAULTFILE
+   */
   public Controleur() {
     this(defaultPath());
   }
 
+  /**
+   * Ouvre le fichier des tâches et crée une BDD interne
+   * @return true si le fichier est ouvert ou inexistant (lancement de l'application pour la première fois), false si échec ouverture
+   * @see task.Database
+   */
   public boolean open() {
     File f = new File(_path);
+
+    // Si le fichier n'existe pas, on sort (permet la création à l'initialisation)
+    if (!f.exists()) {
+      _open = true;
+      return true;
+    }
     try {
       Scanner sc = new Scanner(f);
       if (_open)
@@ -68,6 +103,10 @@ public class Controleur {
     return true;
   }
 
+  /**
+   * Enregistre le fichier des tâches
+   * @return false si échec enregistrement ou aucune modification apportée, false sinon
+   */
   public boolean close() {
     if (!_open) return false;
     try {
@@ -92,6 +131,12 @@ public class Controleur {
     return true;
   }
 
+  /**
+   * Exécute une action sur la BDD des tâches
+   * @param s commande à exécuter (action suivie ou non d'arguments de commande)
+   * @see task.Database
+   * @see task.util.action.Action
+   */
   public void execute(String s) {
     Action a = Action.getInstance(s);
     switch (a.type()) {
@@ -140,10 +185,17 @@ public class Controleur {
     }
   }
 
+  /**
+   * Affiche l'aide sur les commandes de base
+   * @see task.Help
+   */
   public void help() {
     Help.print(_shell);
   }
 
+  /**
+   * Passe en mode interactif (affiche erreur si déjà en mode interactif)
+   */
   public void shell() {
     if (_shell) {
       error();
@@ -152,19 +204,31 @@ public class Controleur {
     forceShell();
   }
 
+  /**
+   * Affiche la liste de toutes les tâches
+   */
   public void viewAll() {
     view(_db.getIds());
   }
 
+  /**
+   * Affiche toutes les tâches dont l'échéance est inférieure à un mois
+   */
   public void viewPartial() {
     view(_db.getIds(Date.today().add(Recurrence.getInstance(1, Recurrence.Unit.MONTH))));
   }
 
+  /**
+   * Passe en mode interactif (sans erreur)
+   */
   public void forceShell() {
     _shell = true;
     while (_shell) execute(_getShell("> "));
   }
 
+  /**
+   * Sort du mode interactif
+   */
   public void exitShell() {
     _shell = false;
   }
