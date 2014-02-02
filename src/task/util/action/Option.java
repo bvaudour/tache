@@ -1,6 +1,7 @@
 package task.util.action;
 
 import task.Tache;
+import task.i18n.Messages;
 import task.util.type.*;
 
 import java.util.HashSet;
@@ -33,24 +34,24 @@ import java.util.Set;
  */
 public enum Option {
 
-  CAT("c:",   Type.STR, "Catégorie"),
-  PRI("p:",   Type.PRI, "Priorité"),
-  DAT("d:",   Type.DAT, "Date"),
-  BEG("b:",   Type.HRE, "Début"),
-  END("e:",   Type.HRE, "Fin"),
-  REC("r:",   Type.REC, "Récurrence"),
-  TAC("n:",   Type.STR, "Description"),
-  IDAT("+d:", Type.REC, "Date (incrémentation)"),
-  IBEG("+b:", Type.REC, "Début (incrémentation)"),
-  IEND("+e:", Type.REC, "Fin (incrémentation)"),
-  DDAT("-d:", Type.REC, "Date (décrémentation)"),
-  DBEG("-b:", Type.REC, "Début (décrémentation)"),
-  DEND("-e:", Type.REC, "Fin (décrémentation)"),
-  RDAT("-d",  Type.NONE, "Date (Suppression)"),
-  RBEG("-b",  Type.NONE, "Début (Suppression)"),
-  REND("-e",  Type.NONE, "Fin (Suppression)"),
-  RREC("-r",  Type.NONE, "Récurrence (Suppression)"),
-  NONE("",    Type.NONE, "");
+  CAT(Messages.getString("Option.option_cat"),   Type.STR, Messages.getString("Option.help_cat")), //$NON-NLS-1$ //$NON-NLS-2$
+  PRI(Messages.getString("Option.option_pri"),   Type.PRI, Messages.getString("Option.help_pri")), //$NON-NLS-1$ //$NON-NLS-2$
+  DAT(Messages.getString("Option.option_date"),   Type.DAT, Messages.getString("Option.help_date")), //$NON-NLS-1$ //$NON-NLS-2$
+  BEG(Messages.getString("Option.option_begin"),   Type.HRE, Messages.getString("Option.help_begin")), //$NON-NLS-1$ //$NON-NLS-2$
+  END(Messages.getString("Option.option_end"),   Type.HRE, Messages.getString("Option.help_end")), //$NON-NLS-1$ //$NON-NLS-2$
+  REC(Messages.getString("Option.option_rec"),   Type.REC, Messages.getString("Option.help_rec")), //$NON-NLS-1$ //$NON-NLS-2$
+  TAC(Messages.getString("Option.option_description"),   Type.STR, Messages.getString("Option.help_description")), //$NON-NLS-1$ //$NON-NLS-2$
+  IDAT(Messages.getString("Option.option_inc_date"), Type.REC, Messages.getString("Option.help_inc_date")), //$NON-NLS-1$ //$NON-NLS-2$
+  IBEG(Messages.getString("Option.option_inc_begin"), Type.REC, Messages.getString("Option.help_inc_begin")), //$NON-NLS-1$ //$NON-NLS-2$
+  IEND(Messages.getString("Option.option_inc_end"), Type.REC, Messages.getString("Option.option_help_inc_end")), //$NON-NLS-1$ //$NON-NLS-2$
+  DDAT(Messages.getString("Option.option_dec_date"), Type.REC, Messages.getString("Option.help_dec_date")), //$NON-NLS-1$ //$NON-NLS-2$
+  DBEG(Messages.getString("Option.option_dec_begin"), Type.REC, Messages.getString("Option.help_dec_begin")), //$NON-NLS-1$ //$NON-NLS-2$
+  DEND(Messages.getString("Option.option_dec_end"), Type.REC, Messages.getString("Option.help_dec_end")), //$NON-NLS-1$ //$NON-NLS-2$
+  RDAT(Messages.getString("Option.option_del_date"),  Type.NONE, Messages.getString("Option.help_del_date")), //$NON-NLS-1$ //$NON-NLS-2$
+  RBEG(Messages.getString("Option.option_del_begin"),  Type.NONE, Messages.getString("Option.help_del_begin")), //$NON-NLS-1$ //$NON-NLS-2$
+  REND(Messages.getString("Option.option_del_end"),  Type.NONE, Messages.getString("Option.help_del_end")), //$NON-NLS-1$ //$NON-NLS-2$
+  RREC(Messages.getString("Option.option_del_rec"),  Type.NONE, Messages.getString("Option.help_del_rec")), //$NON-NLS-1$ //$NON-NLS-2$
+  NONE("",    Type.NONE, ""); //$NON-NLS-1$ //$NON-NLS-2$
 
   /**
    * Liste des options valides

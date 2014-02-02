@@ -80,6 +80,8 @@ public final class Action {
       case ADD  : return getAdd(sc);
       case MOD  :
       case DUP  : return getMod(sc, t);
+      default:
+      	break;
     }
     return NONE;
   }
@@ -224,6 +226,8 @@ public final class Action {
         p = new T2<Option, String>(c, v);
         oldPair.push(p);
         return true;
+      default:
+      	break;
     }
     if (v.isEmpty()) {
       newPair.set(c, v);

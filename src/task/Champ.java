@@ -1,5 +1,6 @@
 package task;
 
+import task.i18n.Messages;
 import task.util.type.Parser;
 import task.util.type.Type;
 
@@ -22,16 +23,16 @@ import task.util.type.Type;
  */
 public enum Champ {
 
-  IDT("ID", 2, Type.INT),
-  IDR("RID", 4, Type.INT),
-  CAT("Catégorie", 15, Type.STR),
-  PRI("Pri", 3, Type.PRI),
-  DAT("Date", 10, Type.DAT),
-  BEG("Début", 5, Type.HRE),
-  END("Fin", 5, Type.HRE),
-  REC("Réc", 3, Type.REC),
-  TAC("Description", 30, Type.STR),
-  DEL("Sup", 3, Type.DEL);
+  IDT(Messages.getString("Champ.id"), 2, Type.INT), //$NON-NLS-1$
+  IDR(Messages.getString("Champ.rid"), 4, Type.INT), //$NON-NLS-1$
+  CAT(Messages.getString("Champ.categorie"), 15, Type.STR), //$NON-NLS-1$
+  PRI(Messages.getString("Champ.priority"), 3, Type.PRI), //$NON-NLS-1$
+  DAT(Messages.getString("Champ.date"), 10, Type.DAT), //$NON-NLS-1$
+  BEG(Messages.getString("Champ.begin"), 5, Type.HRE), //$NON-NLS-1$
+  END(Messages.getString("Champ.end"), 5, Type.HRE), //$NON-NLS-1$
+  REC(Messages.getString("Champ.recurrence"), 3, Type.REC), //$NON-NLS-1$
+  TAC(Messages.getString("Champ.description"), 30, Type.STR), //$NON-NLS-1$
+  DEL(Messages.getString("Champ.deleted"), 3, Type.DEL); //$NON-NLS-1$
 
   /**
    * Liste des Champs autorisés en entrée (extraction fichier)
@@ -59,7 +60,7 @@ public enum Champ {
    * @return Chaîne modifiée
    */
   public StringBuilder out(StringBuilder b, String s) {
-    if (b.length() != 0) b.append(" ");
+    if (b.length() != 0) b.append(" "); //$NON-NLS-1$
     return b.append(Parser.align(s, _type, _size));
   }
 
@@ -74,7 +75,7 @@ public enum Champ {
    * @return Chaîne modifiée
    */
   public StringBuilder in(StringBuilder b, String s) {
-    if (b.length() != 0) b.append("\t");
+    if (b.length() != 0) b.append("\t"); //$NON-NLS-1$
     return b.append(s);
   }
 

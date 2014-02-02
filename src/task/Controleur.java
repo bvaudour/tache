@@ -1,5 +1,6 @@
 package task;
 
+import task.i18n.Messages;
 import task.util.action.Action;
 import task.util.action.Option;
 import task.util.color.Ansi;
@@ -37,7 +38,7 @@ public class Controleur {
    * <li><b>Suppression</b> : Marqueur de suppression de la tâche (1 si tâche clôturée, 0 sinon)</li>
    * </ul>
    */
-  public static final String DEFAULTFILE = ".tache.lst";
+  public static final String DEFAULTFILE = Messages.getString("Controleur.file"); //$NON-NLS-1$
 
   private final String   _path;
   private final Database _db    = new Database();
@@ -45,7 +46,7 @@ public class Controleur {
   private       boolean  _open  = false;
 
   private static String defaultPath() {
-    StringBuilder b = new StringBuilder(System.getProperty("user.home"));
+    StringBuilder b = new StringBuilder(System.getProperty(Messages.getString("Controleur.home"))); //$NON-NLS-1$
     b.append(File.separator).append(DEFAULTFILE);
     return b.toString();
   }
@@ -152,9 +153,11 @@ public class Controleur {
       case NONE:
         error();
         return;
+      default:
+      	break;
     }
     if (!_open && !open()) {
-      System.out.println(Ansi.bold(Couleur.LRED).format("Impossible d'ouvrir le fichier !"));
+      System.out.println(Ansi.bold(Couleur.LRED).format(Messages.getString("Controleur.error_open_file"))); //$NON-NLS-1$
       return;
     }
     switch (a.type()) {
@@ -182,6 +185,8 @@ public class Controleur {
       case DUP:
         duplicate(a.ids(), a.options());
         return;
+      default:
+      	break;
     }
   }
 
@@ -223,7 +228,7 @@ public class Controleur {
    */
   public void forceShell() {
     _shell = true;
-    while (_shell) execute(_getShell("> "));
+    while (_shell) execute(_getShell(Messages.getString("Controleur.prompt"))); //$NON-NLS-1$
   }
 
   /**
@@ -234,7 +239,7 @@ public class Controleur {
   }
 
   private void error() {
-    System.out.println(Ansi.bold(Couleur.LRED).format("Syntaxe incorrecte !\n"));
+    System.out.println(Ansi.bold(Couleur.LRED).format(Messages.getString("Controleur.bad_syntax"))); //$NON-NLS-1$
     help();
   }
 
@@ -251,7 +256,7 @@ public class Controleur {
     System.out.println();
 
     if (ids.isEmpty()) {
-      System.out.println(Ansi.normal(Couleur.YELLOW).format("Aucune tâche"));
+      System.out.println(Ansi.normal(Couleur.YELLOW).format(Messages.getString("Controleur.no_task"))); //$NON-NLS-1$
       return;
     }
 
@@ -299,12 +304,12 @@ public class Controleur {
       System.out.println(a.format(t.out()));
     }
     System.out.println();
-    _printCount(ids.size(), "affichée");
+    _printCount(ids.size(), Messages.getString("Controleur.count_displayed")); //$NON-NLS-1$
   }
 
   private void add(Map<Option, String> m) {
     Set<Tache> l = _db.add(m);
-    String action = "ajoutée";
+    String action = Messages.getString("Controleur.count_added"); //$NON-NLS-1$
     if (l.isEmpty()) {
       _printCount(0, action);
       return;
@@ -317,7 +322,7 @@ public class Controleur {
 
   private void close(Set<Integer> ids) {
     Set<Tache> l = _db.close(ids);
-    String action = "clôturée";
+    String action = Messages.getString("Controleur.count_closed"); //$NON-NLS-1$
     if (l.isEmpty()) {
       _printCount(0, action);
       return;
@@ -330,25 +335,29 @@ public class Controleur {
   }
 
   private void delete(Set<Integer> ids) {
-    String action = "supprimée";
-    String[] qst = {"o", "n"};
+    String action  = Messages.getString("Controleur.count_deleted"); //$NON-NLS-1$
+    String deleted = Messages.getString("Controleur.deleted_task");  //$NON-NLS-1$
+    String[] qst = {Messages.getString("Controleur.yes"), Messages.getString("Controleur.no")}; //$NON-NLS-1$ //$NON-NLS-2$
     ids = _db.getNotDeletedIds(ids);
     int count = 0;
     for (int id : ids) {
       Tache t = _db.get(id);
       if (t == null) continue;
+      String question = (t.rid() != 0) ? Messages.getString("Controleur.question_del_rec") : Messages.getString("Controleur.question_del_task"); //$NON-NLS-1$ //$NON-NLS-2$
+      /*
       StringBuilder b = new StringBuilder("Voulez-vous supprimer ");
       if (t.rid() != 0) b.append("toutes les tâches récurrentes de ");
       b.append("la tâche");
       _name(b, t);
       b.append('?');
-      if (_question(b.toString(), qst) != 0) continue;
+      */
+      if (_question(String.format(question, _taskName(t)), qst) != 0) continue;
       if (t.rid() == 0) {
-        _printName(_db.pop(id), action);
+        _printName(_db.pop(id), deleted);
         ++count;
       } else {
         Set<Tache> lT = _db.popAll(t.rid());
-        for (Tache tS : lT) _printName(tS, action);
+        for (Tache tS : lT) _printName(tS, deleted);
         count += lT.size();
       }
     }
@@ -360,8 +369,9 @@ public class Controleur {
 
   private void modify(Set<Integer> ids, Map<Option, String> m) {
     int count = 0;
-    String[] qst = {"o", "n"};
-    String action = "modifiée";
+    String[] qst = {Messages.getString("Controleur.yes"), Messages.getString("Controleur.no")}; //$NON-NLS-1$ //$NON-NLS-2$
+    String action = Messages.getString("Controleur.count_modified"); //$NON-NLS-1$
+    String modified = Messages.getString("Controleur.modified_task");  //$NON-NLS-1$
     ids = _db.getNotDeletedIds(ids);
     Set<Integer> traites = new HashSet<Integer>();
     for (int id: ids) {
@@ -371,19 +381,18 @@ public class Controleur {
       if (t == null) continue;
       boolean all = false;
       if (t.rid() != 0) {
-        StringBuilder b = new StringBuilder("Voulez-vous modifier toutes les tâches récurrentes de la tâche");
-        _name(b, t).append('?');
-        all = _question(b.toString(), qst) == 0;
+        String question = Messages.getString("Controleur.question_mod_rec"); //$NON-NLS-1$
+        all = _question(String.format(question, _taskName(t)), qst) == 0;
       }
       if (all) {
         Set<Tache> l = _db.modifyAll(t.id(), m);
         for (Tache tM : l) {
-          _printName(tM, action);
+          _printName(tM, modified);
           ids.add(tM.id());
           ++count;
         }
       } else {
-        _printName(_db.modify(t.id(), m), action);
+        _printName(_db.modify(t.id(), m), modified);
         ++count;
       }
     }
@@ -395,7 +404,8 @@ public class Controleur {
 
   private void duplicate(Set<Integer> ids, Map<Option, String> m) {
     int count = 0;
-    String action = "dupliquée";
+    String action = Messages.getString("Controleur.count_duplicated"); //$NON-NLS-1$
+    String dupl   = Messages.getString("Controleur.duplicated_task"); //$NON-NLS-1$
     ids = _db.getNotDeletedIds(ids);
     Set<Tache> l = new LinkedHashSet<Tache>();
     for (int id: ids) {
@@ -408,7 +418,7 @@ public class Controleur {
         ++count;
       }
     }
-    for (Tache t: l) _printName(t, action);
+    for (Tache t: l) _printName(t, dupl);
     _printCount(count, action);
     _db.addLackTasks(Date.today());
     _db.sort();
@@ -421,28 +431,39 @@ public class Controleur {
     Scanner sc = new Scanner(System.in);
     return sc.nextLine();
   }
+  
+  private static String _taskName(Tache t) {
+  	return String.format("%d '%s'", t.id(), t.description()); //$NON-NLS-1$
+  }
 
   private static StringBuilder _name(StringBuilder b, Tache t) {
     b.append(' ').append(t.id());
-    b.append(" '").append(t.description()). append("' ");
+    b.append(" '").append(t.description()). append("' "); //$NON-NLS-1$ //$NON-NLS-2$
     return b;
   }
 
   private static void _printName(Tache t, String action) {
+  	String msg = String.format(action, _taskName(t));
+    System.out.println(Ansi.BOLD.format(msg));
+  	/*
     StringBuilder b = new StringBuilder("Tâche");
     System.out.println(Ansi.BOLD.format(_name(b, t).append(action)));
+    */
   }
 
   private static void _printCount(int i, String action) {
     StringBuilder b = new StringBuilder();
     if (i == 0)
-      b.append("Aucune");
+      b.append(Messages.getString("Controleur.noone")); //$NON-NLS-1$
     else
       b.append(i);
+    /*
     if (i > 1)
       b.append(" tâches ").append(action).append('s');
     else
       b.append(" tâche ").append(action);
+    */
+    b.append(action);
     System.out.println(Ansi.normal(Couleur.YELLOW).format(b));
   }
 
@@ -454,13 +475,13 @@ public class Controleur {
       if (b.length() != 0) b.append('/');
       b.append(r);
     }
-    b.insert(0, " (").append(") ");
+    b.insert(0, " (").append(") "); //$NON-NLS-1$ //$NON-NLS-2$
     while (true) {
       System.out.print(Ansi.BOLD.format(s) + Ansi.bold(Couleur.LYELLOW).format(b));
       String sRep = sc.nextLine().toLowerCase();
       for (int i = 0; i < rep.length; ++i)
         if (sRep.equals(rep[i].toLowerCase())) return i;
-      System.out.println(Ansi.normal(Couleur.LRED).format("Réponse invalide !"));
+      System.out.println(Ansi.normal(Couleur.LRED).format(Messages.getString("Controleur.bad_answer"))); //$NON-NLS-1$
     }
   }
 

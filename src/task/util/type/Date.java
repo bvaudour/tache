@@ -375,6 +375,8 @@ public final class Date implements Comparable<Date> {
         d.e3 += v;
         b = format(d);
         break;
+      default:
+       break;
     }
     return (b) ? new Date(d) : NONE;
   }

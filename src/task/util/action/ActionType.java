@@ -1,5 +1,6 @@
 package task.util.action;
 
+import task.i18n.Messages;
 import task.util.type.Parser;
 
 import java.util.HashSet;
@@ -26,18 +27,18 @@ import java.util.Set;
  */
 public enum ActionType {
 
-  SHELL("shell", "Passe en mode shell"),
-  EXIT("exit", "Sort du mode shell"),
-  ADD("add", "Ajoute une tâche"),
-  MOD("mod", "Modifie une(des) tâche(s)"),
-  DUP("dup", "Duplique une(des) tâches(s)"),
-  CLO("clo", "Clôture une(des) tâches(s)"),
-  DEL("del", "Supprime une(des) tâches(s)"),
-  HELP("help", "Affiche l'aide"),
-  VIEW("view", "Affiche une(des) tâches(s)"),
-  VIEWALL("view", ""),
-  VIEWPARTIAL("view", ""),
-  NONE("", "");
+  SHELL(Messages.getString("ActionType.action_shell"), Messages.getString("ActionType.help_shell")), //$NON-NLS-1$ //$NON-NLS-2$
+  EXIT(Messages.getString("ActionType.action_exit"), Messages.getString("ActionType.help_exit")), //$NON-NLS-1$ //$NON-NLS-2$
+  ADD(Messages.getString("ActionType.action_add"), Messages.getString("ActionType.help_add")), //$NON-NLS-1$ //$NON-NLS-2$
+  MOD(Messages.getString("ActionType.action_mod"), Messages.getString("ActionType.help_mod")), //$NON-NLS-1$ //$NON-NLS-2$
+  DUP(Messages.getString("ActionType.action_dup"), Messages.getString("ActionType.help_dup")), //$NON-NLS-1$ //$NON-NLS-2$
+  CLO(Messages.getString("ActionType.action_clo"), Messages.getString("ActionType.help_clo")), //$NON-NLS-1$ //$NON-NLS-2$
+  DEL(Messages.getString("ActionType.action_del"), Messages.getString("ActionType.help_del")), //$NON-NLS-1$ //$NON-NLS-2$
+  HELP(Messages.getString("ActionType.action_help"), Messages.getString("ActionType.help_help")), //$NON-NLS-1$ //$NON-NLS-2$
+  VIEW(Messages.getString("ActionType.action_view"), Messages.getString("ActionType.help_view")), //$NON-NLS-1$ //$NON-NLS-2$
+  VIEWALL(Messages.getString("ActionType.action_view"), ""), //$NON-NLS-1$ //$NON-NLS-2$
+  VIEWPARTIAL(Messages.getString("ActionType.action_view"), ""), //$NON-NLS-1$ //$NON-NLS-2$
+  NONE("", ""); //$NON-NLS-1$ //$NON-NLS-2$
 
   /**
    * Liste des types d'action valides
@@ -97,6 +98,8 @@ public enum ActionType {
       case MOD:
       case DUP: return Option.extended();
       case ADD: return Option.standard();
+      default:
+      	break;
     }
     return new HashSet<Option>();
   }
