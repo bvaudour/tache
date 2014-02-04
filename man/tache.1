@@ -1,0 +1,287 @@
+.TH tache 1 2014-02-04 "tache 1.1" "User Manuals"
+
+.SH NAME
+tache \- A command line todo manager.
+
+.SH SYNOPSIS
+.B tache [<command> [<filter>] [ <mods>[:<args>] ] ]
+
+.SH DESCRIPTION
+
+Tache is a command line todo list manager. It maintains a list of tasks that you want to do, allowing you to add/remove, and otherwise manipulate them.
+
+At the core, tache is a list processing program. You add text and additional related parameters and redisplay the information in a nice way. It turns into a todo list program when you add due dates and recurrence. It turns into an organized todo list program when you add priorities, category groups, etc.
+
+.SH LIST OF FIELDS OF A TASK LINE
+
+.TP
+.B ID
+It is a number, between 1 and 999, which identifies the task. It is unique and can't be modified. It is recomputed each time the database is modified.
+
+.TP
+.B RID
+Same as ID, but identies group of recurring tasks. It is automatically attributed by the core and it can't be modified neither displayed.
+
+.TP
+.B CATEGORY
+You can use it to classify the task.
+
+.TP
+.B PRIORITY
+It can take the following values: High (very urgent task), Medium (urgent task), Low (less urgent task), and None (no urgent)
+
+.TP
+.B DATE
+It is the due date of a task.
+
+.TP
+.B BEGIN
+It is the time when the task should begin. It can be used only if a due date is defined.
+
+.TP
+.B END
+It is the time when the task should end. It can be used only if a begin clock is defined.
+
+.TP
+.B RECURRENCE
+It is the gaps between two recurring tasks. When this field is defined, the task is automatically duplicated, and the database contains minimum three recurring tasks in the future. When a recurring task is closed, a new recurring task is automatically added after the last recurring task.
+
+.TP
+.B DESCRIPTION
+It is the description/the name of the task.
+
+.TP
+.B CLOSE MARKER
+It is an intern field of the database (as the RID). It is marked when we use the command "clo" to this task.
+
+.SH COMMAND
+
+The command specifies the action to do. There are read commands, write commands and the interactive command. Read commands do not allow modification of tasks (but the core can have to recompute the ids. See section FILTER for more details). Write commands can alter almost any aspect of a task. Interactive command permits to use several read and write commands without to use the "tache" keyword. In this case, the database is saved on exiting interactive mode (on non-interactive mode, database is saved after each command).
+
+.SH READ COMMANDS
+
+.TP
+.B tache help
+Shows the long usage text.
+
+.TP
+.B tache [view [<filter>]]
+Displays the task concerned by the filter. If no filter is specified, it displays only the due task before the next 30 days. In that case, the keyword view isn't necessary.
+
+.SH WRITE COMMANDS
+
+.TP
+.B tache add <mods>
+Adds a new pending task to the task list.
+
+.TP
+.B task clo <filter>
+Marks the specified task as done. If the task hasn't due date, it is definitively removed from the database. Otherwise, it is only removed if due date and time is situated in the past.
+
+.TP
+.B task del <filter>
+Deletes the specified tasks from task list. It has the same effect as the command clo, except the task is definitively removed from the database in all case. Moreover, this is the only way to remove a task with all its recurrences. Before act, a prompt will force you to confirm the action. If the selected task is a recurring task, it will remove all recurring tasks with the same RID. To delete just this recurring task, use the command "clo" instead.
+
+.TP
+.B task dup <filter> [<mods>]
+Duplicates the specified task and allows modifications (not obligatory).
+
+.B task mod <filter> <mods>
+Modifies the existing task with provided information. If it is a recurring task, a prompt will invite ask you if you wish to modify all linked recurring tasks or just this task. If begin clock is incremented or decremented and the end clock isn't specified, the end will be incremented/decremented, too.
+
+.SH INTERACTIVE COMMANDS
+
+.TP
+.B tache shell
+Enters in the interactive mode (prompt mode). All write/read commands are available without beginning with the keyword "tache".
+
+.TP
+.B exit
+Exit the interactive mode.
+
+.SH FILTER
+
+Each task is identified by an id which must be unique. This id is recomputed each time the database is modified (adding a task, modifying, duplicating, etc.) in order to ensure the unicity and compute the logical order.
+
+.br
+The ordering which is processed:
+.br
+1. Ordering by due date. Older due date are prior.
+.br
+2. Ordering by begin's clock of task. Older begins are prior. If begin isn't declared, it is considerated as a daily task and is not prior.
+.br
+3. Ordering by end's clock of task. Older ends are prior. If end isn't declared, it is considerated as a ponctual task and is prior.
+.br
+4. Ordering by declared priority (High, then Medium, then Low, then no Priority).
+
+.br
+These ordering criterias are made simplier with ordering by ids. That's the reason why the ids are systematically recomputed.
+
+The <filter> consists of specifying the list of ids which must be concerned by the command. It can be a unique id (for example 4), a range of ids (4-6 or 6-4), or have multiple criteres. In that case, each criteria must separated by a comma, without space.
+For example: 1,3,5-8,20-15.
+
+Last thing to know about filters: the command view accepts a supplementary filter: the keyword "all", which means all tasks are concerned.
+
+.SH MODIFIERS
+
+The <mods> consist of one or more change to apply to the selected task, or to add a task. Modifiers can or need arguments. In that case, the modifier must have a trailing double dot as separator. You can write or not space char(s) between double dot and argument. A modifier can also increment or decrement the value. In that case, you must specify un number and an unit. Summary:
+
+.B <mod>:<arg>
+Modifies the concerned field by <mod> with the value <arg>
+
+.B +<mod>:<n><u>
+Increments the concerned field from <n> units of <u>
+
+.B -<mod>:<n><u>
+Decrements the concerned field from <n> units of <u>
+
+.B -<mod>
+Empty the old value of the concerned field
+
+.SH LIST OF MODIFIABLE FIELDS
+
+.TP
+.B tache <command> c:<string>
+Modifies the category
+
+.TP
+.B tache <command> n:<string>
+Modifies the description of the task
+
+.TP
+.B tache <command> d:<date>
+Modifies the due date of the task
+
+.TP
+.B tache <command> +d:<n><u>
+Increments the due date of <n> units (unit can be: year, month, etc. See ARGS section for more details). Nota : this modifier can be used with the "add" command. In that case, it increments due date from today.
+
+.TP
+.B tache <command> -d:<n><u>
+Decrements the due date of <n> units (unit can be: year, month, etc. See ARGS section for more details)
+
+.TP
+.B tache <command> -d
+Delete the due date.
+
+.TP
+.B tache <command> b:<time>
+Modifies the begin time of the task. If the due date isn't defined, the time will be automatically deleted.
+
+.TP
+.B tache <command> +b:<n><unit>
+Increments the begin time of the task from <n> units of <u> (hours or minutes). If no modifier of end time is set, this will although be used to modify the end field.
+
+.TP
+.B tache <command> -b:<n><unit>
+Decrements the begin time of the task from <n> units of <u> (hours or minutes). If no modifier of end time is set, this will although be used to modify the end field.
+
+.TP
+.B tache <command> e:<time>
+Modifies the end time of the task. If the begin time isn't defined, or end time < begin time, this field will be automatically deleted.
+
+.TP
+.B tache <command> +e:<n><unit>
+Increments the end time of the task from <n> units of <u> (hours or minutes).
+
+.TP
+.B tache <command> -e:<n><unit>
+Decrements the end time of the task from <n> units of <u> (hours or minutes).
+
+.TP
+.B tache <command> r:<n><unit>
+Modifies the recurrence value of a task with a due date. If no date is defined, this field will be automatically deleted.
+
+.TP
+.B tache <command> -r
+Removes the recurrence of a task.
+
+.TP
+.B tache <command> n:
+Modifies the description of a task.
+
+.SH FORMAT OF ARGS
+
+.TP
+.B Due date
+It can be defined in several ways:
+.br
+- <YYYYMMDD> (for example "tache mod 1 d: 20140201" will set the due date in the February 1st 2014)
+.br
+- <YYYYsMMsDD> where 's' is any separator char (for example "2014.02.01" or "2014-02/01")
+.br
+- <DDsMMsYYYY> where 's' is any separator char
+
+.TP
+.B Incrementation/Decrementation date
+It is of the form <n><u> where <n> is a positive number and <u> the unit (no case sensitive):
+.br
+- y: year (for example "tache mod 1 +d: 1y" increments the date of one year)
+.br
+- m: month
+.br
+- w: week
+.br
+- d: day
+
+.TP
+.B Time
+It can be defined in several ways:
+.br
+- <hhmm> where hh is the hour in 24h format (for example "tache mod 1 b: 1401" will set the begin time at 2:01 PM)
+.br
+- <hhsmm> where 's' is any separator char (for example "14:01" or "14h01")
+
+.TP
+.B Incrementation/Decrementation time
+.br
+It is of the form <n><u> where <n> is a positive number and <u> the unit (no case sensitive):
+- h: hour (for example "tache mod 1 -b:2h" decrements the begin time of two hours (and the end time, too!))
+.br
+- \\': minute (for example "tache mod 1 +e:5\\'")
+
+.TP
+.B Recurrence
+It uses exactly the same format as the incrementation of due date.
+
+.TP
+.B Priority
+It is no case sensitive :
+.br
+- H: define High priority (for example "tache mod 1 p:H")
+.br
+- M: define Medium priority
+.br
+- L: define Low priority
+.br
+- -: delete any priority (for example "tache mod 1 p:-")
+
+.SH FILES
+
+.TP
+~/.tache.lst
+The file which contains all tasks and recurring tasks of all states (closed or not). It is a simple csv file with tab separator. For structure, see "LIST OF FIELDS" section.
+
+.SH CREDITS
+
+.TP
+This is free and unencumbered software released into the public domain.
+http://unlicense.org/ for more information.
+
+.SH SEE ALSO
+
+For more information regarding tache, see the following:
+
+.TP
+The official code repository at
+<git://github.com/bvaudour/tache>
+
+.TP
+You can contact the project by emailing
+<benjamin.vaudour@gmail.com>
+
+.SH REPORTING BUGS
+.TP
+Bugs in tache may be reported to the issue-tracker at
+<https://github.com/bvaudour/tache/issues>
+
