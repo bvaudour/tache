@@ -53,6 +53,10 @@ public final class Ansi {
    * Code gras-italique
    */
   public static final Ansi BITALIC    = new Ansi(Effet.BOLD, Effet.ITALIC);
+  /**
+   * Code gras-italique
+   */
+  public static final Ansi BBLINK     = new Ansi(Effet.BOLD, Effet.BLINK);
 
   private final Couleur    _f;
   private final Couleur    _b;
@@ -315,6 +319,23 @@ public final class Ansi {
    */
   public static Ansi inverted(Couleur c) {
     return INVERTED.font(c);
+  }
+  /**
+   * Applique 2 couleurs à un effet gras-clignotant
+   * @param c1 Couleur de police
+   * @param c2 Couleur d'arrière-plan
+   * @return Code ANSI résultant
+   */
+  public static Ansi bblink(Couleur c1, Couleur c2) {
+    return BBLINK.color(c1, c2);
+  }
+  /**
+   * Applique 1 couleur à un effet grase-clignotant
+   * @param c Couleur de police
+   * @return Code ANSI résultant
+   */
+  public static Ansi bblink(Couleur c) {
+    return BBLINK.font(c);
   }
   /**
    * Applique 2 couleurs à un effet gras-souligné

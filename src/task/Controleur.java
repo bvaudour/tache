@@ -7,6 +7,7 @@ import task.util.color.Ansi;
 import task.util.color.Couleur;
 import task.util.type.Date;
 import task.util.type.Heure;
+import task.util.type.Priorite;
 import task.util.type.Recurrence;
 
 import java.io.File;
@@ -272,19 +273,20 @@ public class Controleur {
       Couleur back = b ? Couleur.BLACK : Couleur.NONE;
       b = !b;
       Tache t = _db.get(i);
+      boolean p = t.priority() == Priorite.HIGH;
       Ansi a;
       if (t.isExpired(d0, h0)) {
-        a = Ansi.blink(Couleur.RED, back);
+        a = (p) ? Ansi.bblink(Couleur.RED, back) : Ansi.blink(Couleur.RED, back);
       } else if (t.date().eq(d0)) {
-        a = Ansi.bold(Couleur.LRED, back);
+        a = (p) ? Ansi.bold(Couleur.LRED, back) : Ansi.normal(Couleur.LRED, back);
       } else if (t.date().le(dow)) {
-        a = Ansi.bold(Couleur.LYELLOW, back);
+        a = (p) ? Ansi.bold(Couleur.LYELLOW, back) : Ansi.normal(Couleur.LYELLOW, back);
       } else if (t.date().le(d7)) {
-        a = Ansi.bold(Couleur.LGREEN, back);
+        a = (p) ? Ansi.bold(Couleur.LGREEN, back) : Ansi.normal(Couleur.LGREEN, back);
       } else if (t.date().le(dom)) {
-        a = Ansi.normal(Couleur.LGREEN, back);
+        a = (p) ? Ansi.bold(Couleur.LCYAN, back) : Ansi.normal(Couleur.LCYAN, back);
       } else if (!t.date().isNull()) {
-        a = Ansi.normal(Couleur.NONE, back);
+        a = (p) ? Ansi.bold(Couleur.NONE, back) : Ansi.normal(Couleur.NONE, back);
       } else {
         switch (t.priority()) {
           case HIGH:
@@ -310,24 +312,26 @@ public class Controleur {
   private void add(Map<Option, String> m) {
     Set<Tache> l = _db.add(m);
     String action = Messages.getString("Controleur.count_added"); //$NON-NLS-1$
+    String added = Messages.getString("Controleur.added_task"); //$NON-NLS-1$
     if (l.isEmpty()) {
       _printCount(0, action);
       return;
     }
     _db.sort();
     _db.resequence();
-    for (Tache t: l) _printName(t, action);
+    for (Tache t: l) _printName(t, added);
     _printCount(l.size(), action);
   }
 
   private void close(Set<Integer> ids) {
     Set<Tache> l = _db.close(ids);
     String action = Messages.getString("Controleur.count_closed"); //$NON-NLS-1$
+    String closed = Messages.getString("Controleur.closed_task"); //$NON-NLS-1$
     if (l.isEmpty()) {
       _printCount(0, action);
       return;
     }
-    for (Tache t: l) _printName(t, action);
+    for (Tache t: l) _printName(t, closed);
     _printCount(l.size(), action);
     _db.addLackTasks(Date.today());
     _db.sort();
@@ -452,19 +456,21 @@ public class Controleur {
   }
 
   private static void _printCount(int i, String action) {
+  	String msg = String.format(action, i);
+  	System.out.println(Ansi.normal(Couleur.YELLOW).format(msg));
+    /*
     StringBuilder b = new StringBuilder();
     if (i == 0)
       b.append(Messages.getString("Controleur.noone")); //$NON-NLS-1$
     else
       b.append(i);
-    /*
     if (i > 1)
       b.append(" tâches ").append(action).append('s');
     else
       b.append(" tâche ").append(action);
-    */
     b.append(action);
     System.out.println(Ansi.normal(Couleur.YELLOW).format(b));
+    */
   }
 
   private static int _question(String s, String[] rep) {
