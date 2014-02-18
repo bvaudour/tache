@@ -645,6 +645,7 @@ public final class Tache implements Comparable<Tache> {
    * @see task.util.action.Option
    */
   public static Tache build(Tache t, Map<Option, String> m) {
+    if (m.containsKey(Option.IDAT)) t._date = Date.today();
     set(t, m);
     t.repairHour();
     t.repairRecur();

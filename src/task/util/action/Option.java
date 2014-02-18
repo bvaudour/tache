@@ -67,6 +67,7 @@ public enum Option {
     l.add(CAT);
     l.add(PRI);
     l.add(DAT);
+    l.add(IDAT);
     l.add(BEG);
     l.add(END);
     l.add(REC);
@@ -80,7 +81,6 @@ public enum Option {
    */
   public static Set<Option> extended() {
     Set<Option> l = standard();
-    l.add(IDAT);
     l.add(IBEG);
     l.add(IEND);
     l.add(DDAT);
